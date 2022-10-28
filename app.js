@@ -5,15 +5,18 @@ const bodyParser = require("body-parser");
 //Creating app constant
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
+var items = ["Buy Food", "Cook Food", "Eat Food"];
 
 //Tells express to usse EJS as view engine...place below express
 app.set("view engine", "ejs");
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //Home get Route
 app.get("/", function (req, res) {
   var today = new Date();
 
+  //Date format
   var options = {
     weekday: "long",
     day: "numeric",
@@ -21,15 +24,17 @@ app.get("/", function (req, res) {
   };
 
   var day = today.toLocaleDateString("en-US", options);
-
-  res.render("list", {
-    kindOfDay: day,
-  });
+  //Renders todays date and new items
+  res.render("list", { kindOfDay: day, newListItems: items });
 });
 
+//Post request triggered
 app.post("/", function (req, res) {
-  let item = req.body.newItem;
-  console.log(item);
+  var item = req.body.newItem;
+
+  items.push(item);
+
+  res.redirect("/");
 });
 
 app.listen(3000, function () {
